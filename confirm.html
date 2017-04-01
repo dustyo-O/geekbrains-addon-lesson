@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .modal.visible {
+            display: table;
+            height: 100%;
+            width: 100%;
+
+            background: rgba(0,0,0, .5);
+        }
+
+        .modal.visible .modal-body {
+            display: table-cell;
+
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .modal-body > * {
+            display: inline-block;
+            background: #fff;
+
+            text-align: left;
+            padding: 5px;
+            border: 1px solid #000;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="message">Привет всем!</div>
+<button class="show-modal">Открыть окошко</button>
+<script>
+    function Modal(element) {
+        if (typeof element === 'string') {
+            element = document.querySelector(element);
+        }
+
+        element.parentNode.removeChild(element);
+
+        var _this = this;
+
+        this._domElement = element;
+        this._modal = document.createElement('div');
+        this._modalBody = document.createElement('div');
+
+        this._modal.classList.add('modal');
+        this._modalBody.classList.add('modal-body');
+
+        this._modal.onclick = function () {
+            _this.hide();
+        };
+
+        this._domElement.onclick = function(event) {
+            event.stopImmediatePropagation();
+        };
+
+        this._modalBody.appendChild(this._domElement);
+        this._modal.appendChild(this._modalBody);
+        document.querySelector('body').appendChild(this._modal);
+    }
+
+    Modal.prototype.show = function() {
+        this._modal.classList.add('visible');
+    };
+
+    Modal.prototype.hide = function() {
+        this._modal.classList.remove('visible');
+    };
+
+    function Confirm() {
+        var _this = this,
+            answer;
+        Modal.apply(this, arguments);
+
+        this._okButton = document.createElement('button');
+        this._cancelButton = document.createElement('button');
+
+        this._okButton.innerText = 'OK';
+        this._cancelButton.innerText = 'Cancel';
+
+        this._okButton.onclick = function() {
+            _this.answer = true;
+            _this.hide();
+        };
+        this._cancelButton.onclick = function() {
+            _this.answer = false;
+            _this.hide();
+        };
+        this._domElement.appendChild(this._okButton);
+        this._domElement.appendChild(this._cancelButton);
+    }
+
+    Confirm.prototype = Object.create(Modal.prototype);
+
+    //var modal = new Confirm('.message');
+    var confirm = new Confirm('.message');
+    document.querySelector('.show-modal').onclick = function() { confirm.show(); };
+</script>
+</body>
+</html>

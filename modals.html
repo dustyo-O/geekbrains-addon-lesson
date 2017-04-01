@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .modal.visible {
+            display: table;
+            height: 100%;
+            width: 100%;
+
+            background: rgba(0,0,0, .5);
+        }
+
+        .modal.visible .modal-body {
+            display: table-cell;
+
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .modal-body > * {
+            display: inline-block;
+            background: #fff;
+
+            text-align: left;
+            padding: 5px;
+            border: 1px solid #000;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="message">Привет всем!</div>
+    <button class="show-modal">Открыть окошко</button>
+    <script>
+        function Modal(element) {
+            if (typeof element === 'string') {
+                element = document.querySelector(element);
+            }
+
+            element.parentNode.removeChild(element);
+
+            var _this = this,
+                modal = document.createElement('div'),
+                modalBody = document.createElement('div');
+
+            modal.classList.add('modal');
+            modalBody.classList.add('modal-body');
+
+            modal.onclick = function () {
+                _this.hide();
+            };
+
+            modalBody.appendChild(element);
+            modal.appendChild(modalBody);
+            document.querySelector('body').appendChild(modal);
+
+            this.show = function() {
+                modal.classList.add('visible');
+            };
+
+            this.hide = function() {
+                modal.classList.remove('visible');
+            };
+        }
+
+        var modal = new Modal('.message');
+        var confirm = new Confirm('.message');
+        document.querySelector('.show-modal').onclick = function() { modal.show(); };
+    </script>
+</body>
+</html>
